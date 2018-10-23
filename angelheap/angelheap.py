@@ -384,12 +384,27 @@ def set_main_arena():
     global main_arena
     global main_arena_off
 
+    #  import pdb; pdb.set_trace()
     offset = getoff("&main_arena")
     # main_arena 
-    #  print(offset)
+    #  print(hex(offset))
     if offset == 0: # no main_arena symbol
-        print("Cannot get main_arena's symbol address. Make sure you install libc debug file (libc6-dbg & libc6-dbg:i386 for debian package).")
-        return
+        #  print("Cannot get main_arena's symbol address. Make sure you install libc debug file (libc6-dbg & libc6-dbg:i386 for debian package).")
+        #  return
+        import os
+        infomap = procmap()
+        #  print(infomap)
+        data = re.search(".*.*\.so", infomap)
+        if data:
+            libc_path = data.group().split()[-1]
+            #  print(libc_path)
+            #  print(int(re.findall("(0x[a-f0-9]+)", os.popen("main_arena {}".format(libc_path)).read())[1], 16))
+            offset = (int(re.findall("(0x[a-f0-9]+)", os.popen("main_arena {}".format(libc_path)).read())[1], 16))
+            
+        else:
+            printf("libc wrong! tell M4x!")
+            return 0
+
     libc = libc_base()
     arch = getarch()
     main_arena_off = offset
