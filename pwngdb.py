@@ -149,17 +149,17 @@ class PwnCmd(object):
         arch = getarch()
         start,end = codeaddr()
         if arch == "x86-64" :
-            print("find " + hex(start) + " , " + hex(end) + ", 0x050f")
-            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0x050f")
+            print("find " + hex(start) + ", " + hex(end) + ", 0x050f")
+            gdb.execute("find " + hex(start) + ", " + hex(end) + ", 0x050f")
         elif arch == "i386":
-            print("find " + hex(start) + " , " + hex(end) + ", 0x80cd")
+            print("find " + hex(start) + ", " + hex(end) + ", 0x80cd")
             gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0x80cd")
         elif arch == "arm":
-            print("find " + hex(start) + " , " + hex(end) + ", 0xbc80df00")
-            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0xbc80df00")
+            print("find " + hex(start) + ", " + hex(end) + ", 0xbc80df00")
+            gdb.execute("find " + hex(start) + ", " + hex(end) + ", 0xbc80df00")
         elif arch == "aarch64":
-            print("find " + hex(start) + " , " + hex(end) + ", 0xd4000001")
-            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0xd4000001")
+            print("find " + hex(start) + ", " + hex(end) + ", 0xd4000001")
+            gdb.execute("find " + hex(start) + ", " + hex(end) + ", 0xd4000001")
         else :
             print("error")
 
