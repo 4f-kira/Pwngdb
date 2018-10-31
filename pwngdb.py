@@ -149,13 +149,17 @@ class PwnCmd(object):
         arch = getarch()
         start,end = codeaddr()
         if arch == "x86-64" :
-            gdb.execute("find 0x050f " + hex(start) + " " + hex(end) )
+            print("find " + hex(start) + " , " + hex(end) + ", 0x050f")
+            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0x050f")
         elif arch == "i386":
-            gdb.execute("find 0x80cd " + hex(start) + " " + hex(end) )
+            print("find " + hex(start) + " , " + hex(end) + ", 0x80cd")
+            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0x80cd")
         elif arch == "arm":
-            gdb.execute("find 0xbc80df00 " + hex(start) + " " + hex(end) )
+            print("find " + hex(start) + " , " + hex(end) + ", 0xbc80df00")
+            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0xbc80df00")
         elif arch == "aarch64":
-            gdb.execute("find 0xd4000001 " + hex(start) + " " + hex(end) )
+            print("find " + hex(start) + " , " + hex(end) + ", 0xd4000001")
+            gdb.execute("find " + hex(start) + " , " + hex(end) + ", 0xd4000001")
         else :
             print("error")
 
