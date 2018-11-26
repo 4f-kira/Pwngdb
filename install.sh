@@ -1,3 +1,4 @@
+export LC_ALL=C
 cd ~/
 git clone https://github.com/bash-c/Pwngdb.git
 cd ~/Pwngdb
