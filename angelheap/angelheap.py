@@ -337,7 +337,7 @@ def procmap():
     else :
         return "error"
 
-def libc_base():
+def libcbase():
     infomap = procmap()
     data = re.search(".*libc.*\.so",infomap)
     if data :
@@ -347,7 +347,7 @@ def libc_base():
         return 0
 
 def getoff(sym):
-    libc = libc_base()
+    libc = libcbase()
     if type(sym) is int :
         return sym-libc
     else :
@@ -384,28 +384,11 @@ def set_main_arena():
     global main_arena
     global main_arena_off
 
-    #  import pdb; pdb.set_trace()
     offset = getoff("&main_arena")
-    # main_arena 
-    #  print(hex(offset))
     if offset == 0: # no main_arena symbol
-        #  print("Cannot get main_arena's symbol address. Make sure you install libc debug file (libc6-dbg & libc6-dbg:i386 for debian package).")
-        #  return
-        import os
-        infomap = procmap()
-        #  print(infomap)
-        data = re.search(".*.*\.so", infomap)
-        if data:
-            libc_path = data.group().split()[-1]
-            #  print(libc_path)
-            #  print(int(re.findall("(0x[a-f0-9]+)", os.popen("main_arena {}".format(libc_path)).read())[1], 16))
-            offset = (int(re.findall("(0x[a-f0-9]+)", os.popen("main_arena {}".format(libc_path)).read())[1], 16))
-            
-        else:
-            printf("libc wrong! tell M4x!")
-            return 0
-
-    libc = libc_base()
+        print("Cannot get main_arena's symbol address. Make sure you install libc debug file (libc6-dbg & libc6-dbg:i386 for debian package).")
+        return
+    libc = libcbase()
     arch = getarch()
     main_arena_off = offset
     main_arena = libc + main_arena_off
@@ -505,10 +488,10 @@ def get_curthread():
     thread_id = int(gdb.execute(cmd,to_string=True).split("thread is")[1].split()[0].strip())
     return thread_id
 
-def get_max_thread():
-    cmd = "info thread"
-    max_thread = int(gdb.execute(cmd,to_string=True).replace("*","").split("\n")[-2].split()[0].strip())
-    return max_thread
+def get_all_threads():
+    cmd = "info threads"
+    all_threads = [int(line.split()[0].strip()) for line in gdb.execute(cmd, to_string=True).replace("*", "").split("\n")[1:-1]]
+    return all_threads
 
 def thread_cmd_execute(thread_id,thread_cmd):
     cmd = "thread apply %d %s" % (thread_id,thread_cmd)
@@ -573,7 +556,7 @@ def trace_normal_bin(chunkhead,arena=None):
     global freememoryarea 
     if not arena :
         arena = main_arena
-    libc = libc_base()
+    libc = libcbase()
     bins = []
     if capsize == 0 :
         arch = getarch()
@@ -1268,8 +1251,8 @@ def putarenainfo():
 
 def putheapinfoall():
     cur_thread_id = get_curthread()
-    max_thread = get_max_thread()
-    for thread_id in range(1,max_thread+1):
+    all_threads = get_all_threads()
+    for thread_id in all_threads:
         if thread_id == cur_thread_id :
             print("\033[33;1m"+("  Thread " + str(thread_id) + "  ").center(50,"=") + "\033[0m",end="")
         else :
@@ -1294,7 +1277,6 @@ def parse_heap(arena=None):
 
     hb = get_heapbase()
     chunkaddr = hb
-
     if not chunkaddr:
         print("Can't find heap")
         return
