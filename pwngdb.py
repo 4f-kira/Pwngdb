@@ -291,6 +291,17 @@ class PwnCmd(object):
             cmd += hex(codebaseaddr + arg1)
         print(gdb.execute(cmd,to_string=True)[:-1])
 
+
+    def bpie(self, *pie_addr_offset):
+        try :
+            pie_addr_offset = int(pie_addr_offset[0])
+            codebs = codeaddr()[0]
+            breakpoint_addr = codebs + pie_addr_offset
+            cmd = "b *" + hex(breakpoint_addr)
+            print(gdb.execute(cmd,to_string=True))
+        except :
+            print( "useage:\tbpie\t0xda5\n\tbpie\t3493" )
+
 class PwngdbCmd(gdb.Command):
     """ Pwngdb command wrapper """
     def __init__(self):
